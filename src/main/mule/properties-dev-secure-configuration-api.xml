@@ -29,6 +29,16 @@ output application/json
 payload]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
+		<http:request method="GET" doc:name="Request" doc:id="490f3152-ee10-4d88-abff-35452ea4bd36" />
+		<ee:transform doc:name="Transform Message" doc:id="3ac907bb-c4fc-483f-9bef-aebef6653879" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+{
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
 		<logger level="INFO" doc:name="Logger" doc:id="1f7fcd31-96e0-4779-b079-a5d77a978e1e" message="flow ended"/>
 	</flow>
 </mule>
