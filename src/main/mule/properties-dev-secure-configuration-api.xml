@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:secure-properties="http://www.mulesoft.org/schema/mule/secure-properties" xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/secure-properties http://www.mulesoft.org/schema/mule/secure-properties/current/mule-secure-properties.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="9a94b24b-478b-4125-833f-67bdaa0a4565" >
+		<http:listener-connection host="${http.listener.host}" port="${http.listener.port}" />
+	</http:listener-config>
+	<db:config name="Database_Config" doc:name="Database Config" doc:id="1983794c-5803-4bcf-a8c2-2823d8aa2e7e" >
+		<db:my-sql-connection host="${database.host}" port="${database.port}" user="${database.user}" password="${secure::database.password}" database="${database.training}" />
+	</db:config>
+	<configuration-properties doc:name="Configuration properties" doc:id="5454bc84-4048-4547-817f-9f85c5e23b83" file="C:\Users\pradeep borate\Downloads\Desktop\Properties\ext-${env}.properties"/>
+	<secure-properties:config name="Secure_Properties_Config" doc:name="Secure Properties Config" doc:id="37bbb411-2efb-4838-bcef-de813aab4524" file='C:\Users\pradeep borate\Downloads\Desktop\Properties\ext-${env}-secure.properties' key="${encrypt-name-key}" />
+	<flow name="properties-dev-secure-configuration-apiFlow" doc:id="bcfc40ac-148f-49ef-976b-52d0a79829db" >
+		<http:listener doc:name="Listener" doc:id="0f33a806-27d0-46a4-997b-fc94f4a6a319" path="${http.listener.path}" config-ref="HTTP_Listener_config"/>
+		<logger level="INFO" doc:name="Logger" doc:id="9261bc5c-10bd-48a5-8fb4-8120af3917e1" message="flow started"/>
+		<db:select doc:id="47afd8ed-4892-4f75-9b1f-0e9d79c38ed5" config-ref="Database_Config">
+			<db:sql ><![CDATA[${database.sqlquery}]]></db:sql>
+		</db:select>
+		<ee:transform doc:name="Transform Message" doc:id="389bba93-9d6c-4a47-814f-947071779a5a" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="1f7fcd31-96e0-4779-b079-a5d77a978e1e" message="flow ended"/>
+	</flow>
+</mule>
